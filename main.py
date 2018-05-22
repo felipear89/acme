@@ -1,8 +1,7 @@
 from enum import Enum
-from pprint import pprint
 from collections import namedtuple
 from datetime import timedelta, date, datetime
-import argparse, json
+import argparse, json, itertools
 
 class Weekday(Enum):
   mon = 0
@@ -66,26 +65,40 @@ def map_week_workload(employee_workload):
         }
   return week_workload
 
+def map_timesheet(entries):
+  timesheet = {}
+  for key, group in itertools.groupby(entries, key=lambda e: e.split('T')[0]):
+    timesheet[key] = list(group)
+  return timesheet
+
 def main():
   
   args = handle_arguments()
   json_args = transform_filled_values(args, load_to_json)
   ask_input = lambda param : json.load(input(f'Enter the {param} param input: '))
   user_input = fill_empty_values(json_args, ask_input)
-  user_input['requested_pis'] = input('Retrieve balance from pis number: ')
+  pis = input('Retrieve balance from pis number: ')
 
   config = user_input['config']
+  timeclock = user_input['timeclock']
+
   today = datetime.strptime(config['today'], '%Y-%m-%d')
   period_start = datetime.strptime(config['period_start'], '%Y-%m-%d')
-  employee = find_employee(config['employees'], user_input['requested_pis'])
-  week_workload = map_week_workload(employee['workload'])
   
-  for date in daterange(period_start, today):
-    pass#
+  employee = find_employee(config['employees'], pis)
+  week_workload = map_week_workload(employee['workload'])
+  employee_entries = find_employee(timeclock, pis)
+
+  timesheet = map_timesheet(employee_entries['entries'])
+
+  for d in daterange(period_start, today):
+    day_workload = week_workload[Weekday(d.weekday())]
+    try:
+      day_entries = timesheet[d.strftime('%Y-%m-%d')]
+      print(day_entries)
+    except KeyError as err:
+      # Employee doesn't work at this date :( 
+      pass
     
-
-
-
-
 if __name__ == '__main__':
     main()
