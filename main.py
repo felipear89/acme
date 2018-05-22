@@ -42,7 +42,7 @@ def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days + 1)):
         yield start_date + timedelta(n)
 
-def find_employee(employees, pis):
+def find_by_pis_number(employees, pis):
   for employee in employees:
     if employee['pis_number'] == pis:
       return employee
@@ -85,9 +85,9 @@ def main():
   today = datetime.strptime(config['today'], '%Y-%m-%d')
   period_start = datetime.strptime(config['period_start'], '%Y-%m-%d')
   
-  employee = find_employee(config['employees'], pis)
+  employee = find_by_pis_number(config['employees'], pis)
   week_workload = map_week_workload(employee['workload'])
-  employee_entries = find_employee(timeclock, pis)
+  employee_entries = find_by_pis_number(timeclock, pis)
 
   timesheet = map_timesheet(employee_entries['entries'])
 

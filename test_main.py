@@ -1,5 +1,5 @@
 from main import handle_arguments, fill_empty_values, transform_filled_values, daterange, \
-find_employee, map_week_workload, Weekday, map_timesheet
+find_by_pis_number, map_week_workload, Weekday, map_timesheet
 from datetime import date
 
 def test_fill_empty_values():
@@ -24,9 +24,9 @@ def test_daterange():
   assert date(2018, 5, 31) == interval.__next__()
   assert date(2018, 6, 1) == interval.__next__()
   
-def test_find_employee():
+def test_find_by_pis_number():
   employees = [{'pis_number': '123'}, {'pis_number': '456'}]
-  employee = find_employee(employees, '456')
+  employee = find_by_pis_number(employees, '456')
   assert employee['pis_number'] == '456'
 
 def test_map_week_workload():
