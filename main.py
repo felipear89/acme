@@ -48,7 +48,7 @@ def find_employee(employees, pis):
     if employee['pis_number'] == pis:
       return employee
 
-def map_week_workload(employee):
+def map_week_workload(employee_workload):
   default_workload = {
         'workload_in_minutes': 0,
         'minimum_rest_interval_in_minutes': 0,
@@ -58,7 +58,7 @@ def map_week_workload(employee):
         Weekday.thu: default_workload, Weekday.fri: default_workload, Weekday.sat: default_workload,\
         Weekday.sun: default_workload}
 
-  for workload in employee['workload']:
+  for workload in employee_workload:
       for day in workload['days']:
         week_workload[Weekday[day]] = {
           'workload_in_minutes': workload['workload_in_minutes'],
@@ -78,7 +78,7 @@ def main():
   today = datetime.strptime(config['today'], '%Y-%m-%d')
   period_start = datetime.strptime(config['period_start'], '%Y-%m-%d')
   employee = find_employee(config['employees'], user_input['requested_pis'])
-  week_workload = map_week_workload(employee)
+  week_workload = map_week_workload(employee['workload'])
   
   for date in daterange(period_start, today):
     pass#
