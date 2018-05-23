@@ -1,16 +1,6 @@
-from enum import Enum
 from collections import namedtuple
 from datetime import timedelta, date, datetime
 import argparse, json, itertools
-
-class Weekday(Enum):
-  mon = 0
-  tue = 1
-  wed = 2
-  thu = 3
-  fri = 4
-  sat = 5
-  sun = 6
 
 def handle_arguments():
   parser = argparse.ArgumentParser(description='Return the workload balance.')
@@ -46,24 +36,6 @@ def find_by_pis_number(employees, pis):
   for employee in employees:
     if employee['pis_number'] == pis:
       return employee
-
-def map_week_workload(employee_workload):
-  default_workload = {
-        'workload_in_minutes': 0,
-        'minimum_rest_interval_in_minutes': 0,
-      }
-  
-  week_workload = {Weekday.mon: default_workload, Weekday.tue: default_workload, Weekday.wed: default_workload, \
-        Weekday.thu: default_workload, Weekday.fri: default_workload, Weekday.sat: default_workload,\
-        Weekday.sun: default_workload}
-
-  for workload in employee_workload:
-      for day in workload['days']:
-        week_workload[Weekday[day]] = {
-          'workload_in_minutes': workload['workload_in_minutes'],
-          'minimum_rest_interval_in_minutes': workload['minimum_rest_interval_in_minutes'],
-        }
-  return week_workload
 
 def map_timesheet(entries):
   timesheet = {}

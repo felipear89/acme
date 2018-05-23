@@ -1,5 +1,6 @@
 from main import handle_arguments, fill_empty_values, transform_filled_values, daterange, \
-find_by_pis_number, map_week_workload, Weekday, map_timesheet
+find_by_pis_number, map_timesheet
+from models import Weekday
 from datetime import date
 
 def test_fill_empty_values():
@@ -28,17 +29,6 @@ def test_find_by_pis_number():
   employees = [{'pis_number': '123'}, {'pis_number': '456'}]
   employee = find_by_pis_number(employees, '456')
   assert employee['pis_number'] == '456'
-
-def test_map_week_workload():
-  workload = [{'workload_in_minutes': 540, 'minimum_rest_interval_in_minutes': 60,
-                'days': ['mon', 'tue','wed','thu']},
-              {'workload_in_minutes': 480, 'minimum_rest_interval_in_minutes': 60,
-                'days': ['fri']}]
-  week_workload = map_week_workload(workload)
-  assert week_workload[Weekday.mon]['workload_in_minutes'] == 540
-  assert week_workload[Weekday.fri]['workload_in_minutes'] == 480
-  assert week_workload[Weekday.sat]['workload_in_minutes'] == 0
-  assert week_workload[Weekday.sun]['workload_in_minutes'] == 0
   
   def test_map_timesheet():
     entries = ['2018-04-10T05:43:00', '2018-04-10T09:28:00', '2018-04-10T09:46:00', '2018-04-10T11:05:00',
