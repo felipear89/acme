@@ -63,13 +63,16 @@ class Employee:
           }
     return week_workload
 
+  def workload_in_minutes(self, date):
+    return self.workload[Weekday(datetime.strptime(date, '%Y-%m-%d').weekday())]['workload_in_minutes']
+
   def total_interval_duration(self, date):
     clock_in = self.timesheet.clock_in(date)
     interval_clock_out = self.timesheet.interval_clock_out(date)
     interval_clock_in = self.timesheet.interval_clock_in(date)
     clock_out = self.timesheet.clock_out(date)
 
-    workload_in_minutes = self.workload[Weekday(datetime.strptime(date, '%Y-%m-%d').weekday())]['workload_in_minutes']
+    workload_in_minutes = self.workload_in_minutes(date)
     if None in (clock_in, clock_out, interval_clock_in, interval_clock_out,):
       return timedelta(0)
     
@@ -97,6 +100,11 @@ class Employee:
   
   def is_invalid_interval(self, date):
     return self.total_interval_duration(date) == timedelta(0) and len(self.timesheet.entry_by_day[date]) == 4
+
+  def balance_in_minutes(self, date):
+    worked_time_in_minutes = int(self.total_day_worked_time(date).total_seconds() / 60)
+    workload_in_minutes = self.workload_in_minutes(date)
+    return worked_time_in_minutes - workload_in_minutes
 
 class Weekday(Enum):
   mon = 0

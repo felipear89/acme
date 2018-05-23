@@ -148,3 +148,27 @@ def test_employee_valid_interval():
   timesheet = TimeSheet(entries)
   employee = Employee(timesheet, default_workload)
   assert employee.is_invalid_interval('2018-04-12') is False
+
+def test_balance_zero():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T18:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert employee.balance_in_minutes('2018-04-12') == 0
+
+def test_balance_with_credit():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T19:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert employee.balance_in_minutes('2018-04-12') == 60
+
+def test_balance_with_debit():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T16:59:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert employee.balance_in_minutes('2018-04-12') == -61
+
+def test_balance_without_interval():
+  entries = ['2018-04-12T08:00:00', '2018-04-12T09:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert employee.balance_in_minutes('2018-04-12') == -480
