@@ -1,7 +1,7 @@
 import itertools
 from datetime import datetime, timedelta
 from enum import Enum
-from main import daterange
+from utils import daterange
 
 class TimeSheet:
   
@@ -123,6 +123,15 @@ class Employee:
       total = total + worked_time
     return total
 
+  def response(self, start, end, pis):
+    history = self.history(start, end)
+    return {
+      'pis_number': pis,
+      'summary': {
+        'balance': str(employee.balance_summary_in_minutes(history))
+      },
+      'history': history_in_datetime
+    }
 
 class Weekday(Enum):
   mon = 0

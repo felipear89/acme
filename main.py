@@ -1,6 +1,7 @@
 from collections import namedtuple
 from datetime import timedelta, date, datetime
 import argparse, json, itertools
+from models import Employee, TimeSheet
 
 def handle_arguments():
   parser = argparse.ArgumentParser(description='Return the workload balance.')
@@ -28,14 +29,18 @@ def load_to_json(path):
     data = json.load(f)
   return data
 
-def daterange(start_date, end_date):
-    for n in range(int ((end_date - start_date).days + 1)):
-        yield start_date + timedelta(n)
-
 def find_by_pis_number(employees, pis):
   for employee in employees:
     if employee['pis_number'] == pis:
       return employee
+
+# def transform(array, key, apply):
+#   response = []
+#   for i in array:
+#     array_value = i.copy()
+#     array_value[key] = apply(array_value[key])
+#     response.append(array_value)
+#   return response
 
 def main():
   
@@ -52,19 +57,11 @@ def main():
   employee_config = find_by_pis_number(config['employees'], pis)
   employee_timeclock = find_by_pis_number(timeclock, pis)
 
-  employee = Employee(employee_config['workload'], employee_timeclock['entries'])
-
+  employee = Employee(TimeSheet(employee_timeclock['entries']), employee_config['workload'])
 
   today = datetime.strptime(config['today'], '%Y-%m-%d')
   period_start = datetime.strptime(config['period_start'], '%Y-%m-%d')
-  for d in daterange(period_start, today):
-    day_workload = week_workload[Weekday(d.weekday())]
-    try:
-      day_entries = timesheet[d.strftime('%Y-%m-%d')]
-      print(day_entries)
-    except KeyError as err:
-      # Employee doesn't work at this date :( 
-      pass
+  
     
 if __name__ == '__main__':
     main()
