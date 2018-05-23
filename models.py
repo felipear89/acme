@@ -1,5 +1,5 @@
 import itertools
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 
 class TimeSheet:
@@ -71,17 +71,22 @@ class Employee:
 
     workload_in_minutes = self.workload[Weekday(datetime.strptime(date, '%Y-%m-%d').weekday())]['workload_in_minutes']
     if None in (clock_in, clock_out, interval_clock_in, interval_clock_out,):
-      return 0
+      return timedelta(0)
     
     worked_time = (clock_out - interval_clock_in) + (interval_clock_out - clock_in)
     worked_time_minutes = int(worked_time.total_seconds() / 60)
     
     if (worked_time_minutes >= workload_in_minutes / 2):
       return self.timesheet.interval_duration(date)
-    return 0
+    return timedelta(0)
 
   def total_day_worked_time(self, date):
-    pass
+    total_interval_duration = self.total_interval_duration(date)
+    clock_in = self.timesheet.clock_in(date)
+    clock_out = self.timesheet.clock_out(date)
+    if None in (clock_in, clock_out, total_interval_duration,):
+      return 0
+    return clock_out - clock_in - total_interval_duration
 
 
 class Weekday(Enum):

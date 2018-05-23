@@ -1,4 +1,9 @@
 from models import TimeSheet, Employee, Weekday
+
+default_workload = [{'workload_in_minutes': 540, 'minimum_rest_interval_in_minutes': 60,
+                'days': ['mon', 'tue','wed','thu']},
+              {'workload_in_minutes': 480, 'minimum_rest_interval_in_minutes': 60,
+                'days': ['fri']}]
   
 def test_map_timesheet():
   entries = ['2018-04-10T05:43:00', '2018-04-10T09:28:00', '2018-04-10T09:46:00', '2018-04-10T11:05:00',
@@ -57,11 +62,8 @@ def test_get_clock_out():
   assert str(timesheet.clock_out('2018-04-14')) == '2018-04-14 10:00:00'
 
 def test_map_week_workload():
-  workload = [{'workload_in_minutes': 540, 'minimum_rest_interval_in_minutes': 60,
-                'days': ['mon', 'tue','wed','thu']},
-              {'workload_in_minutes': 480, 'minimum_rest_interval_in_minutes': 60,
-                'days': ['fri']}]
-  employee = Employee(None, workload)
+  
+  employee = Employee(None, default_workload)
   
   assert employee.workload[Weekday.mon]['workload_in_minutes'] == 540
   assert employee.workload[Weekday.fri]['workload_in_minutes'] == 480
@@ -78,24 +80,59 @@ def test_interval_timesheet():
 
   assert str(interval_duration) == '0:18:00'
 
-def test_total_day_worked_time():
-  pass
+def test_total_interval_duration_without_entry():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T20:00:00',]
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_interval_duration('2018-04-14')) == '0:00:00'
+
+def test_total_interval_duration_without_interval():
+  entries = ['2018-04-12T08:00:00', '2018-04-12T20:00:00',]
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_interval_duration('2018-04-12')) == '0:00:00'
+
+def test_total_interval_duration_with_incomplete_workday():
+  entries = ['2018-04-16T08:00:00','2018-04-16T09:00:00','2018-04-16T13:00:00','2018-04-16T14:00:00',]
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_interval_duration('2018-04-16')) == '0:00:00'
+
+def test_total_interval_duration_with_1_min():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:01:00','2018-04-12T12:02:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_interval_duration('2018-04-12')) == '0:01:00'
 
 def test_total_interval_duration():
   entries = ['2018-04-10T05:43:00', '2018-04-10T09:28:00', '2018-04-10T09:46:00', '2018-04-10T11:05:00',
     '2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T20:00:00',
-    '2018-04-13T09:43:00','2018-04-13T10:30:00',
     '2018-04-16T08:00:00','2018-04-16T09:00:00','2018-04-16T13:00:00','2018-04-16T14:00:00',]
-
   timesheet = TimeSheet(entries)
-  workload = [{'workload_in_minutes': 540, 'minimum_rest_interval_in_minutes': 60,
-                'days': ['mon', 'tue','wed','thu']},
-              {'workload_in_minutes': 480, 'minimum_rest_interval_in_minutes': 60,
-                'days': ['fri']}]
-  employee = Employee(timesheet, workload)
-
+  employee = Employee(timesheet, default_workload)
   assert str(employee.total_interval_duration('2018-04-10')) == '0:18:00'
   assert str(employee.total_interval_duration('2018-04-12')) == '1:00:00'
-  assert str(employee.total_interval_duration('2018-04-13')) == '0'
-  assert str(employee.total_interval_duration('2018-04-14')) == '0'
-  assert str(employee.total_interval_duration('2018-04-16')) == '0'
+
+def test_workedtime_completed_workday():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T18:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_day_worked_time('2018-04-12')) == '9:00:00'
+
+def test_workedtime_completed_workday_1_min_interval():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:01:00','2018-04-12T18:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_day_worked_time('2018-04-12')) == '9:59:00'
+
+def test_workedtime_without_interval():
+  entries = ['2018-04-12T08:00:00','2018-04-12T20:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_day_worked_time('2018-04-12')) == '12:00:00'
+
+def test_workedtime_incomplete_workday():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:01:00','2018-04-12T12:02:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert str(employee.total_day_worked_time('2018-04-12')) == '4:01:00'
