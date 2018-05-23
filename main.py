@@ -34,14 +34,6 @@ def find_by_pis_number(employees, pis):
     if employee['pis_number'] == pis:
       return employee
 
-# def transform(array, key, apply):
-#   response = []
-#   for i in array:
-#     array_value = i.copy()
-#     array_value[key] = apply(array_value[key])
-#     response.append(array_value)
-#   return response
-
 def main():
   
   args = handle_arguments()
