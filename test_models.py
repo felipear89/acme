@@ -84,7 +84,8 @@ def test_total_day_worked_time():
 def test_total_interval_duration():
   entries = ['2018-04-10T05:43:00', '2018-04-10T09:28:00', '2018-04-10T09:46:00', '2018-04-10T11:05:00',
     '2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T20:00:00',
-    '2018-04-13T09:43:00','2018-04-13T10:30:00',]
+    '2018-04-13T09:43:00','2018-04-13T10:30:00',
+    '2018-04-16T08:00:00','2018-04-16T09:00:00','2018-04-16T13:00:00','2018-04-16T14:00:00',]
 
   timesheet = TimeSheet(entries)
   workload = [{'workload_in_minutes': 540, 'minimum_rest_interval_in_minutes': 60,
@@ -97,3 +98,4 @@ def test_total_interval_duration():
   assert str(employee.total_interval_duration('2018-04-12')) == '1:00:00'
   assert str(employee.total_interval_duration('2018-04-13')) == '0'
   assert str(employee.total_interval_duration('2018-04-14')) == '0'
+  assert str(employee.total_interval_duration('2018-04-16')) == '0'
