@@ -39,10 +39,9 @@ def test_map_week_workload():
                 'days': ['mon', 'tue','wed','thu']},
               {'workload_in_minutes': 480, 'minimum_rest_interval_in_minutes': 60,
                 'days': ['fri']}]
-  employee = Employee(None)
-  week_workload = employee.map_week_workload(workload)
+  employee = Employee(None, workload)
   
-  assert week_workload[Weekday.mon]['workload_in_minutes'] == 540
-  assert week_workload[Weekday.fri]['workload_in_minutes'] == 480
-  assert week_workload[Weekday.sat]['workload_in_minutes'] == 0
-  assert week_workload[Weekday.sun]['workload_in_minutes'] == 0
+  assert employee.workload[Weekday.mon]['workload_in_minutes'] == 540
+  assert employee.workload[Weekday.fri]['workload_in_minutes'] == 480
+  assert employee.workload[Weekday.sat]['workload_in_minutes'] == 0
+  assert employee.workload[Weekday.sun]['workload_in_minutes'] == 0
