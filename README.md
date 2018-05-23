@@ -26,7 +26,6 @@ Just install and run *pytest*
 
 or using docker
 
-`
-docker build -t xerpa .
-docker run -it --rm --name just-testing xerpa
-`
+`docker build -t xerpa .`
+
+`docker run -it --rm --name just-testing xerpa`
