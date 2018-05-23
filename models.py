@@ -1,4 +1,5 @@
 import itertools
+from datetime import datetime
 from enum import Enum
 
 class TimeSheet:
@@ -9,6 +10,11 @@ class TimeSheet:
   
   def clock_in(self, date):
     return self.entry_by_day[date][0]
+
+  def interval_duration(self, date):
+    leave = datetime.strptime(self.entry_by_day[date][1], '%Y-%m-%dT%H:%M:%S')
+    arrive = datetime.strptime(self.entry_by_day[date][2], '%Y-%m-%dT%H:%M:%S')
+    return arrive - leave
   
   def clock_out(self, date):
     day_timeclock = self.entry_by_day[date]
@@ -44,6 +50,9 @@ class Employee:
             'minimum_rest_interval_in_minutes': workload['minimum_rest_interval_in_minutes'],
           }
     return week_workload
+
+  def day_balance(date):
+    pass
 
 class Weekday(Enum):
   mon = 0

@@ -45,3 +45,13 @@ def test_map_week_workload():
   assert employee.workload[Weekday.fri]['workload_in_minutes'] == 480
   assert employee.workload[Weekday.sat]['workload_in_minutes'] == 0
   assert employee.workload[Weekday.sun]['workload_in_minutes'] == 0
+
+def test_interval_timesheet():
+  entries = ['2018-04-10T05:43:00', '2018-04-10T09:28:00', '2018-04-10T09:46:00', '2018-04-10T11:05:00',
+      '2018-04-12T02:26:00','2018-04-12T05:42:00','2018-04-12T05:56:00','2018-04-12T07:42:00',
+      '2018-04-13T09:43:00','2018-04-13T10:30:00',]
+
+  timesheet = TimeSheet(entries)
+  interval_duration = timesheet.interval_duration('2018-04-10')
+
+  assert str(interval_duration) == '0:18:00'
