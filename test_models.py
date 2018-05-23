@@ -212,20 +212,24 @@ def test_response():
   entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T18:00:00',
             '2018-04-13T08:00:00','2018-04-13T12:00:00','2018-04-13T13:00:00','2018-04-13T19:00:00',
             '2018-04-17T08:00:00','2018-04-17T12:00:00','2018-04-17T13:00:00','2018-04-17T19:00:00',
+            '2018-04-18T08:00:00','2018-04-18T20:00:00',
+            '2018-04-19T10:00:00','2018-04-19T12:00:00','2018-04-19T12:30:00','2018-04-19T13:30:00',
+            
   ]
   timesheet = TimeSheet(entries)
   employee = Employee(timesheet, default_workload)
   
-  response = employee.response(datetime(2018, 4,12), datetime(2018, 4,17), '123456')
-
+  response = employee.response(datetime(2018, 4,12), datetime(2018, 4,19), '123456')
+  
   assert response['pis_number'] == '123456'
-  assert response['summary']['balance'] == '-06:00'
+  assert response['summary']['balance'] == '-09:00'
   assert response['history'][0]['day'] == '2018-04-12'
   assert response['history'][0]['balance'] == '00:00'
-  
   assert response['history'][1]['balance'] == '02:00'
   assert response['history'][2]['balance'] == '00:00'
   assert response['history'][3]['balance'] == '00:00'
   assert response['history'][4]['balance'] == '-09:00'
   assert response['history'][5]['balance'] == '01:00'
+  assert response['history'][6]['balance'] == '03:00'
+  assert response['history'][7]['balance'] == '-06:00'
 
