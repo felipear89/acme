@@ -136,3 +136,15 @@ def test_workedtime_incomplete_workday():
   timesheet = TimeSheet(entries)
   employee = Employee(timesheet, default_workload)
   assert str(employee.total_day_worked_time('2018-04-12')) == '4:01:00'
+
+def test_employee_invalid_interval():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:10:00','2018-04-12T12:11:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert employee.is_invalid_interval('2018-04-12') is True
+
+def test_employee_valid_interval():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:10:00','2018-04-12T20:11:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  assert employee.is_invalid_interval('2018-04-12') is False
