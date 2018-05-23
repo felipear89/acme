@@ -54,6 +54,7 @@ def main():
   today = datetime.strptime(config['today'], '%Y-%m-%d')
   period_start = datetime.strptime(config['period_start'], '%Y-%m-%d')
   
+  print(employee.response(period_start, today, pis))
     
 if __name__ == '__main__':
     main()
