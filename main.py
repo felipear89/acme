@@ -8,18 +8,18 @@ def handle_arguments():
   parser.add_argument('--timeclock', dest='timeclock', help='The timeclock entries path')
   return vars(parser.parse_args())
 
-def fill_empty_values(dictionary, m):
+def fill_empty_values(dictionary, fill):
   new_dict = dictionary.copy()
   for key, value in dictionary.items():
     if value is None:
-      new_dict[key] = m(key)
+      new_dict[key] = fill(key)
   return new_dict
 
-def transform_filled_values(dictionary, m):
+def transform_filled_values(dictionary, transform):
   new_dict = dictionary.copy()
   for key, value in dictionary.items():
     if value is not None:
-      new_dict[key] = m(value)
+      new_dict[key] = transform(value)
   return new_dict
 
 def load_to_json(path):
