@@ -37,32 +37,26 @@ def find_by_pis_number(employees, pis):
     if employee['pis_number'] == pis:
       return employee
 
-def map_timesheet(entries):
-  timesheet = {}
-  for key, group in itertools.groupby(entries, key=lambda e: e.split('T')[0]):
-    timesheet[key] = list(group)
-  return timesheet
-
 def main():
   
   args = handle_arguments()
   json_args = transform_filled_values(args, load_to_json)
   ask_input = lambda param : json.load(input(f'Enter the {param} param input: '))
   user_input = fill_empty_values(json_args, ask_input)
+  
   pis = input('Retrieve balance from pis number: ')
 
   config = user_input['config']
   timeclock = user_input['timeclock']
 
+  employee_config = find_by_pis_number(config['employees'], pis)
+  employee_timeclock = find_by_pis_number(timeclock, pis)
+
+  employee = Employee(employee_config['workload'], employee_timeclock['entries'])
+
+
   today = datetime.strptime(config['today'], '%Y-%m-%d')
   period_start = datetime.strptime(config['period_start'], '%Y-%m-%d')
-  
-  employee = find_by_pis_number(config['employees'], pis)
-  week_workload = map_week_workload(employee['workload'])
-  employee_entries = find_by_pis_number(timeclock, pis)
-
-  timesheet = map_timesheet(employee_entries['entries'])
-
   for d in daterange(period_start, today):
     day_workload = week_workload[Weekday(d.weekday())]
     try:
