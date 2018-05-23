@@ -115,10 +115,8 @@ class Employee:
       day_balance['balance'] = self.balance_in_minutes(date.strftime(date.strftime('%Y-%m-%d')))
       history.append(day_balance)
     return history
-  
-  # def formated_history(self):
 
-  def balance_summary(self, history):
+  def balance_summary_in_minutes(self, history):
     total = timedelta(0)
     for day_balance in history:
       worked_time = timedelta(minutes=day_balance['balance'])

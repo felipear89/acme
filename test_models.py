@@ -205,5 +205,5 @@ def test_balance_summary():
   timesheet = TimeSheet(entries)
   employee = Employee(timesheet, default_workload)
   history = employee.history(datetime(2018, 4,12), datetime(2018, 4,16))
-  balance_summary = employee.balance_summary(history)
+  balance_summary = employee.balance_summary_in_minutes(history)
   assert (balance_summary.total_seconds() / 60) == -960
