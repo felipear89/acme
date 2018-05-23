@@ -86,8 +86,17 @@ class Employee:
     clock_out = self.timesheet.clock_out(date)
     if None in (clock_in, clock_out, total_interval_duration,):
       return 0
-    return clock_out - clock_in - total_interval_duration
-
+    
+    invalid_interval = timedelta(0)
+    if self.is_invalid_interval(date):
+      interval_clock_out = self.timesheet.interval_clock_out(date)
+      interval_clock_in = self.timesheet.interval_clock_in(date)
+      invalid_interval = interval_clock_in - interval_clock_out
+      
+    return clock_out - clock_in - total_interval_duration - invalid_interval
+  
+  def is_invalid_interval(self, date):
+    return self.total_interval_duration(date) == timedelta(0) and len(self.timesheet.entry_by_day[date]) == 4
 
 class Weekday(Enum):
   mon = 0

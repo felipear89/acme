@@ -99,7 +99,7 @@ def test_total_interval_duration_with_incomplete_workday():
   assert str(employee.total_interval_duration('2018-04-16')) == '0:00:00'
 
 def test_total_interval_duration_with_1_min():
-  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:01:00','2018-04-12T12:02:00']
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:01:00','2018-04-12T21:01:00']
   timesheet = TimeSheet(entries)
   employee = Employee(timesheet, default_workload)
   assert str(employee.total_interval_duration('2018-04-12')) == '0:01:00'
@@ -132,7 +132,7 @@ def test_workedtime_without_interval():
   assert str(employee.total_day_worked_time('2018-04-12')) == '12:00:00'
 
 def test_workedtime_incomplete_workday():
-  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:01:00','2018-04-12T12:02:00']
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T12:10:00','2018-04-12T12:11:00']
   timesheet = TimeSheet(entries)
   employee = Employee(timesheet, default_workload)
   assert str(employee.total_day_worked_time('2018-04-12')) == '4:01:00'
