@@ -199,3 +199,11 @@ def test_history_between_two_days():
   assert history[3]['balance'] == 0
   assert history[4]['day'] == '2018-04-16'
   assert history[4]['balance'] == -540
+
+def test_balance_summary():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T19:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  history = employee.history(datetime(2018, 4,12), datetime(2018, 4,16))
+  balance_summary = employee.balance_summary(history)
+  assert (balance_summary.total_seconds() / 60) == -960

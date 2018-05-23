@@ -115,6 +115,16 @@ class Employee:
       day_balance['balance'] = self.balance_in_minutes(date.strftime(date.strftime('%Y-%m-%d')))
       history.append(day_balance)
     return history
+  
+  # def formated_history(self):
+
+  def balance_summary(self, history):
+    total = timedelta(0)
+    for day_balance in history:
+      worked_time = timedelta(minutes=day_balance['balance'])
+      total = total + worked_time
+    return total
+
 
 class Weekday(Enum):
   mon = 0
