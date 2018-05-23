@@ -6,24 +6,36 @@ class TimeSheet:
   
   def __init__(self, entries):
     self.entries_list = entries
-    self.entry_by_day = self.map_timesheet()
+    self.entry_by_day = self.map_timesheet(self.entries_list)
   
   def clock_in(self, date):
-    return self.entry_by_day[date][0]
+    if date not in self.entry_by_day:
+      return None
+    return datetime.strptime(self.entry_by_day[date][0], '%Y-%m-%dT%H:%M:%S')
+
+  def interval_clock_in(self, date):
+    if date in self.entry_by_day and len(self.entry_by_day[date]) == 4:
+      return datetime.strptime(self.entry_by_day[date][2], '%Y-%m-%dT%H:%M:%S')
+
+  def interval_clock_out(self, date):
+    if date in self.entry_by_day and len(self.entry_by_day[date]) == 4:
+      return datetime.strptime(self.entry_by_day[date][1], '%Y-%m-%dT%H:%M:%S')
 
   def interval_duration(self, date):
-    leave = datetime.strptime(self.entry_by_day[date][1], '%Y-%m-%dT%H:%M:%S')
-    arrive = datetime.strptime(self.entry_by_day[date][2], '%Y-%m-%dT%H:%M:%S')
+    leave = self.interval_clock_out(date)
+    arrive = self.interval_clock_in(date)
     return arrive - leave
   
   def clock_out(self, date):
+    if date not in self.entry_by_day:
+      return None
     day_timeclock = self.entry_by_day[date]
     size = len(day_timeclock)
-    return day_timeclock[size-1]
+    return datetime.strptime(day_timeclock[size-1], '%Y-%m-%dT%H:%M:%S')
 
-  def map_timesheet(self):
+  def map_timesheet(self, entries_list):
     timesheet = {}
-    for key, group in itertools.groupby(self.entries_list, key=lambda e: e.split('T')[0]):
+    for key, group in itertools.groupby(entries_list, key=lambda e: e.split('T')[0]):
       timesheet[key] = sorted(list(group))
     return timesheet
 
@@ -51,8 +63,26 @@ class Employee:
           }
     return week_workload
 
-  def day_balance(date):
+  def total_interval_duration(self, date):
+    clock_in = self.timesheet.clock_in(date)
+    interval_clock_out = self.timesheet.interval_clock_out(date)
+    interval_clock_in = self.timesheet.interval_clock_in(date)
+    clock_out = self.timesheet.clock_out(date)
+
+    workload_in_minutes = self.workload[Weekday(datetime.strptime(date, '%Y-%m-%d').weekday())]['workload_in_minutes']
+    if None in (clock_in, clock_out, interval_clock_in, interval_clock_out,):
+      return 0
+    
+    worked_time = (clock_out - interval_clock_in) + (interval_clock_out - clock_in)
+    worked_time_minutes = int(worked_time.total_seconds() / 60)
+    
+    if (worked_time_minutes >= workload_in_minutes / 2):
+      return self.timesheet.interval_duration(date)
+    return 0
+
+  def total_day_worked_time(self, date):
     pass
+
 
 class Weekday(Enum):
   mon = 0
