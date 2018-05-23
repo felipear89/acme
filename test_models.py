@@ -1,4 +1,5 @@
 from models import TimeSheet, Employee, Weekday
+from datetime import datetime
 
 default_workload = [{'workload_in_minutes': 540, 'minimum_rest_interval_in_minutes': 60,
                 'days': ['mon', 'tue','wed','thu']},
@@ -172,3 +173,29 @@ def test_balance_without_interval():
   timesheet = TimeSheet(entries)
   employee = Employee(timesheet, default_workload)
   assert employee.balance_in_minutes('2018-04-12') == -480
+
+def test_history_just_one_day():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T19:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  history = employee.history(datetime(2018, 4,12), datetime(2018, 4,12))
+  assert len(history) == 1
+  assert history[0]['day'] == '2018-04-12'
+  assert history[0]['balance'] == 60
+
+def test_history_between_two_days():
+  entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T19:00:00']
+  timesheet = TimeSheet(entries)
+  employee = Employee(timesheet, default_workload)
+  history = employee.history(datetime(2018, 4,12), datetime(2018, 4,16))
+  assert len(history) == 5
+  assert history[0]['day'] == '2018-04-12'
+  assert history[0]['balance'] == 60
+  assert history[1]['day'] == '2018-04-13'
+  assert history[1]['balance'] == -480
+  assert history[2]['day'] == '2018-04-14'
+  assert history[2]['balance'] == 0
+  assert history[3]['day'] == '2018-04-15'
+  assert history[3]['balance'] == 0
+  assert history[4]['day'] == '2018-04-16'
+  assert history[4]['balance'] == -540

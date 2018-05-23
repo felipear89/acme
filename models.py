@@ -1,6 +1,7 @@
 import itertools
 from datetime import datetime, timedelta
 from enum import Enum
+from main import daterange
 
 class TimeSheet:
   
@@ -88,7 +89,7 @@ class Employee:
     clock_in = self.timesheet.clock_in(date)
     clock_out = self.timesheet.clock_out(date)
     if None in (clock_in, clock_out, total_interval_duration,):
-      return 0
+      return timedelta(0)
     
     invalid_interval = timedelta(0)
     if self.is_invalid_interval(date):
@@ -105,6 +106,15 @@ class Employee:
     worked_time_in_minutes = int(self.total_day_worked_time(date).total_seconds() / 60)
     workload_in_minutes = self.workload_in_minutes(date)
     return worked_time_in_minutes - workload_in_minutes
+
+  def history(self, start, end):
+    history = []
+    for date in daterange(start, end):
+      day_balance = {}
+      day_balance['day'] = date.strftime('%Y-%m-%d')
+      day_balance['balance'] = self.balance_in_minutes(date.strftime(date.strftime('%Y-%m-%d')))
+      history.append(day_balance)
+    return history
 
 class Weekday(Enum):
   mon = 0
