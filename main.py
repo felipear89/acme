@@ -50,9 +50,9 @@ def main():
   employee_config = find_by_pis_number(config['employees'], pis)
   employee_timeclock = find_by_pis_number(timeclock, pis)
 
-  holydays_processor = lambda minutes, workload_date: pos_processor_workload(minutes, workload_date, config['holydays'])
+  holidays_processor = lambda minutes, workload_date: pos_processor_workload(minutes, workload_date, config['holidays'])
 
-  employee = Employee(TimeSheet(employee_timeclock['entries']), employee_config['workload'], holydays_processor)
+  employee = Employee(TimeSheet(employee_timeclock['entries']), employee_config['workload'], holidays_processor)
 
   today = datetime.strptime(config['today'], '%Y-%m-%d')
   period_start = datetime.strptime(config['period_start'], '%Y-%m-%d')

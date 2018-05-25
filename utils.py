@@ -21,8 +21,8 @@ def transform(array, key, apply):
     response.append(array_value)
   return response
 
-def pos_processor_workload(minutes, workload_date, holydays):
-    for holyday in holydays:
-      if workload_date == holyday:
+def pos_processor_workload(minutes, workload_date, holidays):
+    for holiday in holidays:
+      if workload_date == holiday:
         return 0
     return minutes

@@ -18,8 +18,8 @@ def hours_minutes():
   assert hours_minutes(timedelta(days=-1)) == '-24:00'
   assert hours_minutes(timedelta(minutes=-4)) == '-00:04'
 
-def test_workload_holyday():
+def test_workload_holiday():
   assert pos_processor_workload(480, '2018-04-09', ['2018-04-09', '2018-04-10']) == 0
 
-def test_workload_not_holyday():
+def test_workload_not_holiday():
   assert pos_processor_workload(480, '2018-04-13', ['2018-04-09', '2018-04-10']) == 480

@@ -237,7 +237,7 @@ def test_response():
   assert response['history'][6]['balance'] == '03:00'
   assert response['history'][7]['balance'] == '-06:00'
 
-def test_with_holydays():
+def test_with_holidays():
   entries = ['2018-04-12T08:00:00','2018-04-12T12:00:00','2018-04-12T13:00:00','2018-04-12T18:00:00',
             '2018-04-13T08:00:00','2018-04-13T12:00:00','2018-04-13T13:00:00','2018-04-13T19:00:00',
             '2018-04-17T08:00:00','2018-04-17T12:00:00','2018-04-17T13:00:00','2018-04-17T19:00:00',
@@ -246,10 +246,10 @@ def test_with_holydays():
             
   ]
 
-  holydays_processor = lambda minutes, workload_date: pos_processor_workload(minutes, workload_date, ['2018-04-19', '2018-04-13'])
+  holidays_processor = lambda minutes, workload_date: pos_processor_workload(minutes, workload_date, ['2018-04-19', '2018-04-13'])
 
   timesheet = TimeSheet(entries)
-  employee = Employee(timesheet, default_workload, holydays_processor)
+  employee = Employee(timesheet, default_workload, holidays_processor)
   
   response = employee.response(datetime(2018, 4,12), datetime(2018, 4,19), '123456')
   
