@@ -42,9 +42,10 @@ class TimeSheet:
 
 class Employee:
 
-  def __init__(self, timesheet, workload):
+  def __init__(self, timesheet, workload, pos_processor_workload):
     self.timesheet = timesheet
     self.workload = self.map_week_workload(workload)
+    self.pos_processor_workload = pos_processor_workload
 
   def map_week_workload(self, employee_workload):
     default_workload = {
@@ -65,7 +66,8 @@ class Employee:
     return week_workload
 
   def workload_in_minutes(self, date):
-    return self.workload[Weekday(datetime.strptime(date, '%Y-%m-%d').weekday())]['workload_in_minutes']
+    return self.pos_processor_workload(self.workload[Weekday(datetime.strptime(date, '%Y-%m-%d').weekday())]['workload_in_minutes'], \
+          date)
 
   def total_interval_duration(self, date):
     clock_in = self.timesheet.clock_in(date)

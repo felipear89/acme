@@ -1,4 +1,4 @@
-from utils import daterange, hours_minutes
+from utils import daterange, hours_minutes, pos_processor_workload
 from datetime import date, timedelta
 
 def test_daterange():
@@ -17,3 +17,9 @@ def hours_minutes():
   assert hours_minutes(timedelta(days=2)) == '48:00'
   assert hours_minutes(timedelta(days=-1)) == '-24:00'
   assert hours_minutes(timedelta(minutes=-4)) == '-00:04'
+
+def test_workload_holyday():
+  assert pos_processor_workload(480, '2018-04-09', ['2018-04-09', '2018-04-10']) == 0
+
+def test_workload_not_holyday():
+  assert pos_processor_workload(480, '2018-04-13', ['2018-04-09', '2018-04-10']) == 480

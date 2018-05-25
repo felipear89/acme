@@ -1,6 +1,6 @@
 {
-    "today": "2018-05-07",
-    "period_start": "2018-04-10",
+    "today": "2018-04-12",
+    "period_start": "2018-04-11",
     "employees": [
         {
             "workload": [
@@ -74,7 +74,7 @@
         {
             "workload": [
                 {
-                    "workload_in_minutes": 270,
+                    "workload_in_minutes": 540,
                     "minimum_rest_interval_in_minutes": 0,
                     "days": [
                         "mon",
@@ -519,5 +519,6 @@
             "pis_number": "56248438595",
             "name": "Goddard Sherwood Jr"
         }
-    ]
+    ],
+    "holydays": ["2018-04-09", "2018-04-11"]
 }

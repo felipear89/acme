@@ -20,3 +20,9 @@ def transform(array, key, apply):
     array_value[key] = apply(array_value[key])
     response.append(array_value)
   return response
+
+def pos_processor_workload(minutes, workload_date, holydays):
+    for holyday in holydays:
+      if workload_date == holyday:
+        return 0
+    return minutes
