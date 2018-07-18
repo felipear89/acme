@@ -1,4 +1,4 @@
-# xerpa
+# FooBar
 ## Requirements
 Docker or python 3.6.0 (used in development)
 
@@ -26,6 +26,6 @@ Just install and run *pytest*
 
 or using docker
 
-`docker build -t xerpa .`
+`docker build -t foobar .`
 
-`docker run -it --rm --name just-testing xerpa`
+`docker run -it --rm --name just-testing foobar`
